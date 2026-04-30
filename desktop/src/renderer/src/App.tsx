@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { Result, Spin } from 'antd'
 import clsx from 'clsx'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
 import { useMediaQuery } from 'react-responsive'
 
@@ -15,7 +15,8 @@ import {
   resolutionAtom,
   serialPortStateAtom,
   videoScaleAtom,
-  videoStateAtom
+  videoStateAtom,
+  isImmersiveModeAtom
 } from '@renderer/jotai/device'
 import { isKeyboardEnableAtom } from '@renderer/jotai/keyboard'
 import { mouseModeAtom, mouseStyleAtom } from '@renderer/jotai/mouse'
@@ -36,6 +37,7 @@ const App = (): ReactElement => {
   const mouseMode = useAtomValue(mouseModeAtom)
   const mouseStyle = useAtomValue(mouseStyleAtom)
   const isKeyboardEnable = useAtomValue(isKeyboardEnableAtom)
+  const [isImmersiveMode, setIsImmersiveMode] = useAtom(isImmersiveModeAtom)
   const setResolution = useSetAtom(resolutionAtom)
 
   const [state, setState] = useState<State>('loading')
@@ -53,6 +55,22 @@ const App = (): ReactElement => {
       window.electron.ipcRenderer.invoke(IpcEvents.CLOSE_SERIAL_PORT)
     }
   }, [])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
+      if (event.ctrlKey && event.shiftKey && event.code === 'Escape') {
+        if (isImmersiveMode) {
+          setIsImmersiveMode(false)
+          window.electron.ipcRenderer.send(IpcEvents.SET_FULL_SCREEN, false)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isImmersiveMode, setIsImmersiveMode])
 
   async function requestMediaPermissions(resolution?: Resolution): Promise<void> {
     try {
@@ -91,7 +109,7 @@ const App = (): ReactElement => {
 
       {videoState === 'connected' && serialPortState === 'connected' && (
         <>
-          <Menu />
+          {!isImmersiveMode && <Menu />}
           <Mouse />
           {isKeyboardEnable && <Keyboard />}
         </>
@@ -109,7 +127,7 @@ const App = (): ReactElement => {
         playsInline
       />
 
-      <VirtualKeyboard isBigScreen={isBigScreen} />
+      {!isImmersiveMode && <VirtualKeyboard isBigScreen={isBigScreen} />}
     </>
   )
 }

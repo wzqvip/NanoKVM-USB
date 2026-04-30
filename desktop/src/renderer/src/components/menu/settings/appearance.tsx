@@ -1,9 +1,12 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { Divider, Select, Switch } from 'antd'
-import { LanguagesIcon } from 'lucide-react'
+import { useAtom } from 'jotai'
+import { LanguagesIcon, MonitorIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { IpcEvents } from '@common/ipc-events'
 import languages from '@renderer/i18n/languages'
+import { isImmersiveModeAtom } from '@renderer/jotai/device'
 import { setLanguage } from '@renderer/libs/storage'
 import * as storage from '@renderer/libs/storage'
 
@@ -11,6 +14,8 @@ export const Appearance = (): ReactElement => {
   const { t, i18n } = useTranslation()
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isImmersiveMode, setIsImmersiveMode] = useAtom(isImmersiveModeAtom)
+
 
   const options = languages.map((language) => ({
     value: language.key,
@@ -34,6 +39,13 @@ export const Appearance = (): ReactElement => {
 
     setIsMenuOpen(isOpen)
     storage.setIsMenuOpen(isOpen)
+  }
+
+  function toggleImmersiveMode(): void {
+    const isImmersive = !isImmersiveMode
+
+    setIsImmersiveMode(isImmersive)
+    window.electron.ipcRenderer.send(IpcEvents.SET_FULL_SCREEN, isImmersive)
   }
 
   return (
@@ -64,6 +76,21 @@ export const Appearance = (): ReactElement => {
         </div>
 
         <Switch value={isMenuOpen} onChange={toggleMenu} />
+      </div>
+
+      {/* immersive mode */}
+      <div className="flex items-center justify-between pt-6">
+        <div className="flex flex-col">
+          <div className="flex items-center space-x-1">
+            <MonitorIcon size={16} />
+            <span>{t('settings.appearance.immersiveMode')}</span>
+          </div>
+          <span className="text-xs text-neutral-500">
+            {t('settings.appearance.immersiveModeTips')}
+          </span>
+        </div>
+
+        <Switch value={isImmersiveMode} onChange={toggleImmersiveMode} />
       </div>
     </>
   )

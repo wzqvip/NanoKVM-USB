@@ -85,7 +85,9 @@ const en = {
         title: 'Appearance',
         language: 'Language',
         menu: 'Menu Bar',
-        menuTips: 'Open menu bar when launch'
+        menuTips: 'Open menu bar when launch',
+        immersiveMode: 'Immersive Mode',
+        immersiveModeTips: 'Hide all UI elements in full screen. Exit with Ctrl+Shift+Esc'
       },
       update: {
         title: 'Check for Updates',

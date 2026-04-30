@@ -46,6 +46,11 @@ export const Keyboard = (): ReactElement => {
       event.preventDefault()
       event.stopPropagation()
 
+      // Allow Ctrl+Shift+Esc to bubble up for exiting immersive mode
+      if (event.ctrlKey && event.shiftKey && event.code === 'Escape') {
+        return
+      }
+
       // Fallback for Japanese keyboards with Microsoft IME where event.code is empty for right Shift
       let code = event.code
       if (!code && event.key === 'Shift') {
