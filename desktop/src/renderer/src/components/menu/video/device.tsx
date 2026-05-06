@@ -49,7 +49,12 @@ export const Device = (): ReactElement => {
         return device
       })
 
-      setDevices(mediaDevices)
+      const dummyDevice: MediaDevice = {
+        videoId: 'dummy-video',
+        videoName: 'Dummy Video Device (Testing)'
+      }
+
+      setDevices([dummyDevice, ...mediaDevices])
     } catch (err) {
       console.log(err)
     }

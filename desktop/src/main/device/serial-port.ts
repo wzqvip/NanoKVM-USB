@@ -12,6 +12,7 @@ export class SerialPort {
 
   private port: SP | null
   private onDisconnect?: () => void
+  private isDummy: boolean = false
 
   constructor() {
     this.port = null
@@ -26,6 +27,13 @@ export class SerialPort {
 
       const path = options.path
       const baudRate = options.baudRate || this.SERIAL_BAUD_RATE
+
+      this.isDummy = path === 'Dummy USB Device (Testing)'
+
+      if (this.isDummy) {
+        this.port = { isOpen: true } as any
+        return
+      }
 
       this.port = new SP({ path, baudRate }, (err) => {
         if (err) {
@@ -84,6 +92,8 @@ export class SerialPort {
       return
     }
 
+    if (this.isDummy) return
+
     const uint8Array = new Uint8Array(data)
     this.port.write(uint8Array)
   }
@@ -92,6 +102,8 @@ export class SerialPort {
     if (!this.port?.isOpen) {
       throw new Error('Serial port not initialized')
     }
+
+    if (this.isDummy) return []
 
     const result: number[] = []
     const startTime = Date.now()
@@ -120,6 +132,12 @@ export class SerialPort {
   async close(): Promise<void> {
     if (this.port?.isOpen) {
       try {
+        if (this.isDummy) {
+          this.port = null
+          this.isDummy = false
+          return
+        }
+
         this.port.removeAllListeners()
 
         await new Promise<void>((resolve, reject) => {

@@ -62,7 +62,45 @@ An Electron application providing native desktop integration.
 
 ## Deployment & Development
 
-- **Web Client**: Can be built using `npm run build` and served via Nginx or deployed using the provided Docker configuration.
-- **Desktop Client**: Can be built for Windows, macOS, and Linux using `electron-builder`.
-  - Commands: `npm run build:win`, `npm run build:mac`, `npm run build:linux`.
-- **Communication Protocol**: Both clients implement a serial-based protocol (`proto.ts`) to send HID commands (keyboard, mouse) and control signals to the NanoKVM hardware.
+### Building on Windows
+
+#### Desktop Client
+To build the desktop application for Windows:
+1.  **Navigate to the desktop directory**:
+    ```powershell
+    cd desktop
+    ```
+2.  **Install dependencies**:
+    ```powershell
+    npm install
+    ```
+3.  **Run the build command**:
+    ```powershell
+    npm run build:win
+    ```
+4.  **Output**: The installer will be generated in `desktop/dist/NanoKVM-USB-x.x.x-win-x64-setup.exe`.
+
+#### Web Client
+To build the web-based client:
+1.  **Navigate to the browser directory**:
+    ```powershell
+    cd browser
+    ```
+2.  **Install dependencies**:
+    ```powershell
+    npm install
+    ```
+3.  **Run the build command**:
+    ```powershell
+    npm run build
+    ```
+4.  **Output**: The static files will be generated in `browser/dist/`.
+
+### Docker Deployment
+The web client can also be deployed using Docker:
+```powershell
+docker-compose up -d
+```
+
+### Communication Protocol
+Both clients implement a serial-based protocol (`proto.ts`) to send HID commands (keyboard, mouse) and control signals to the NanoKVM hardware via USB Serial.

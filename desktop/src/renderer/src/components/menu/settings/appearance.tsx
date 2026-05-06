@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import { IpcEvents } from '@common/ipc-events'
 import languages from '@renderer/i18n/languages'
-import { isImmersiveModeAtom } from '@renderer/jotai/device'
+import { isImmersiveModeAtom, isNoExitModeAtom } from '@renderer/jotai/device'
 import { setLanguage } from '@renderer/libs/storage'
 import * as storage from '@renderer/libs/storage'
 
@@ -15,6 +15,7 @@ export const Appearance = (): ReactElement => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isImmersiveMode, setIsImmersiveMode] = useAtom(isImmersiveModeAtom)
+  const [isNoExitMode, setIsNoExitMode] = useAtom(isNoExitModeAtom)
 
 
   const options = languages.map((language) => ({
@@ -91,6 +92,18 @@ export const Appearance = (): ReactElement => {
         </div>
 
         <Switch value={isImmersiveMode} onChange={toggleImmersiveMode} />
+      </div>
+
+      {/* no-exit mode */}
+      <div className="flex items-center justify-between pt-6">
+        <div className="flex flex-col">
+          <span>{t('settings.appearance.noExitMode')}</span>
+          <span className="text-xs text-neutral-500">
+            {t('settings.appearance.noExitModeTips')}
+          </span>
+        </div>
+
+        <Switch value={isNoExitMode} onChange={setIsNoExitMode} />
       </div>
     </>
   )

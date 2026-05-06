@@ -86,7 +86,9 @@ const zh = {
         menu: '菜单栏',
         menuTips: '启动时是否打开菜单栏',
         immersiveMode: '沉浸模式',
-        immersiveModeTips: '在全屏模式下隐藏所有 UI 元素。按 Ctrl+Shift+Esc 退出'
+        immersiveModeTips: '在全屏模式下隐藏所有 UI 元素。按 Ctrl+Alt+Esc 退出',
+        noExitMode: '无退出模式',
+        noExitModeTips: '断开连接时保留最后一帧画面'
       },
       update: {
         title: '更新',

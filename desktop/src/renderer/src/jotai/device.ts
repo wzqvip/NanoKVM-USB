@@ -19,4 +19,5 @@ export const serialPortAtom = atom('')
 export const serialPortStateAtom = atom<SerialState>('disconnected')
 export const baudRateAtom = atom(57600)
 export const isImmersiveModeAtom = atom(false)
+export const isNoExitModeAtom = atom(false)
 

@@ -46,8 +46,8 @@ export const Keyboard = (): ReactElement => {
       event.preventDefault()
       event.stopPropagation()
 
-      // Allow Ctrl+Shift+Esc to bubble up for exiting immersive mode
-      if (event.ctrlKey && event.shiftKey && event.code === 'Escape') {
+      // Allow Ctrl+Alt+Esc to bubble up for exiting immersive mode
+      if (event.ctrlKey && event.altKey && event.code === 'Escape') {
         return
       }
 

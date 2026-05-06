@@ -41,6 +41,23 @@ class Camera {
     this.height = height
     if (audioId) this.audioId = audioId
 
+    if (id === 'dummy-video') {
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      if (ctx) {
+        ctx.fillStyle = 'black'
+        ctx.fillRect(0, 0, width, height)
+        ctx.fillStyle = 'white'
+        ctx.font = '48px Arial'
+        ctx.textAlign = 'center'
+        ctx.fillText('Dummy Video Device', width / 2, height / 2)
+      }
+      this.stream = (canvas as any).captureStream(60)
+      return
+    }
+
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({ video, audio })
     } catch {

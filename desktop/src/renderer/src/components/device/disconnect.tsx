@@ -1,8 +1,9 @@
 import { ReactElement, useEffect } from 'react'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 import { IpcEvents } from '@common/ipc-events'
 import {
+  isNoExitModeAtom,
   serialPortAtom,
   serialPortStateAtom,
   videoDeviceIdAtom,
@@ -15,8 +16,15 @@ export const Disconnect = (): ReactElement => {
   const setSerialPortState = useSetAtom(serialPortStateAtom)
   const setSerialPort = useSetAtom(serialPortAtom)
 
+  const isNoExitMode = useAtomValue(isNoExitModeAtom)
+
   useEffect(() => {
     const rmListener = window.electron.ipcRenderer.on(IpcEvents.SERIAL_PORT_DISCONNECTED, () => {
+      if (isNoExitMode) {
+        setSerialPortState('disconnected')
+        return
+      }
+
       setVideoState('disconnected')
       setSerialPortState('disconnected')
 

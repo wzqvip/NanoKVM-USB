@@ -58,7 +58,8 @@ const App = (): ReactElement => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent): void => {
-      if (event.ctrlKey && event.shiftKey && event.code === 'Escape') {
+      // Allow Ctrl+Alt+Esc to bubble up for exiting immersive mode
+      if (event.ctrlKey && event.altKey && event.code === 'Escape') {
         if (isImmersiveMode) {
           setIsImmersiveMode(false)
           window.electron.ipcRenderer.send(IpcEvents.SET_FULL_SCREEN, false)

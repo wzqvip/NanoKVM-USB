@@ -17,7 +17,11 @@ async function getSerialPorts(): Promise<string[]> {
     const ports = await SerialPort.list()
     const paths = ports.map((port) => port.path)
 
+    paths.unshift('Dummy USB Device (Testing)')
+
     return paths.sort((a, b) => {
+      if (a === 'Dummy USB Device (Testing)') return -1
+      if (b === 'Dummy USB Device (Testing)') return 1
       const aHasUSB = a.toLowerCase().includes('usb')
       const bHasUSB = b.toLowerCase().includes('usb')
 

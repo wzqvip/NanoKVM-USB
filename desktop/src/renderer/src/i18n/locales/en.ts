@@ -87,7 +87,9 @@ const en = {
         menu: 'Menu Bar',
         menuTips: 'Open menu bar when launch',
         immersiveMode: 'Immersive Mode',
-        immersiveModeTips: 'Hide all UI elements in full screen. Exit with Ctrl+Shift+Esc'
+        immersiveModeTips: 'Hide all UI elements in full screen. Exit with Ctrl+Alt+Esc',
+        noExitMode: 'No-exit Mode',
+        noExitModeTips: 'Keep the last frame when disconnected'
       },
       update: {
         title: 'Check for Updates',

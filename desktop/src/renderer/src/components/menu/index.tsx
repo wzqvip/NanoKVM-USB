@@ -1,9 +1,12 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 import { Divider } from 'antd'
 import clsx from 'clsx'
-import { ChevronRightIcon, GripVerticalIcon, XIcon } from 'lucide-react'
+import { useAtom } from 'jotai'
+import { ChevronRightIcon, GripVerticalIcon, MonitorIcon, XIcon } from 'lucide-react'
 import Draggable from 'react-draggable'
 
+import { IpcEvents } from '@common/ipc-events'
+import { isImmersiveModeAtom } from '@renderer/jotai/device'
 import * as storage from '@renderer/libs/storage'
 
 import { Audio } from './audio'
@@ -16,6 +19,7 @@ import { Video } from './video'
 
 export const Menu = (): ReactElement => {
   const [isMenuOpen, setIsMenuOpen] = useState(true)
+  const [isImmersiveMode, setIsImmersiveMode] = useAtom(isImmersiveModeAtom)
   const [menuBounds, setMenuBounds] = useState({ left: 0, right: 0, top: 0, bottom: 0 })
 
   const nodeRef = useRef<HTMLDivElement | null>(null)
@@ -55,6 +59,13 @@ export const Menu = (): ReactElement => {
     setIsMenuOpen(!isMenuOpen)
   }
 
+  function toggleImmersiveMode(): void {
+    const isImmersive = !isImmersiveMode
+
+    setIsImmersiveMode(isImmersive)
+    window.electron.ipcRenderer.send(IpcEvents.SET_FULL_SCREEN, isImmersive)
+  }
+
   return (
     <Draggable
       nodeRef={nodeRef}
@@ -91,6 +102,13 @@ export const Menu = (): ReactElement => {
             <Recorder />
 
             <Divider type="vertical" className="px-0.5" />
+
+            <div
+              className="flex h-[28px] cursor-pointer items-center justify-center rounded px-2 text-white hover:bg-neutral-700/70"
+              onClick={toggleImmersiveMode}
+            >
+              <MonitorIcon size={18} />
+            </div>
 
             <Settings />
             <div
