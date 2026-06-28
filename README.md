@@ -1,7 +1,7 @@
 # NanoKVM-USB
 
 Changes:
-Add immersive mode/full screen. No UI.
+Add immersive/full screen mode. No UI.
 Add dummy video/serial device for testing.
 Add friendly name for Serial port(testing).
 
