@@ -50,12 +50,24 @@ export const SerialPort = ({ setMsg }: SerialPortProps): ReactElement => {
   }, [])
 
   async function getSerialPorts(autoOpen: boolean): Promise<void> {
-    const serialPorts = await window.electron.ipcRenderer.invoke(IpcEvents.GET_SERIAL_PORTS)
-    setOptions(serialPorts.map((sp: string) => ({ value: sp, label: sp })))
+    const serialPorts: { path: string; friendlyName?: string }[] = await window.electron.ipcRenderer.invoke(IpcEvents.GET_SERIAL_PORTS)
+    setOptions(serialPorts.map((sp) => ({ value: sp.path, label: sp.friendlyName || sp.path })))
 
     if (autoOpen) {
-      const port = storage.getSerialPort()
-      if (port && serialPorts.includes(port)) {
+      let port = storage.getSerialPort()
+      let portExists = port && serialPorts.some((sp) => sp.path === port)
+      if (!portExists) {
+        const defaultPort = serialPorts.find(
+          (sp) =>
+            sp.friendlyName?.toLowerCase().includes('usb-serial ch340') ||
+            sp.path.toLowerCase().includes('usb-serial ch340')
+        )
+        if (defaultPort) {
+          port = defaultPort.path
+          portExists = true
+        }
+      }
+      if (portExists && port) {
         const savedBaudRate = storage.getBaudRate()
         await selectSerialPort(port, savedBaudRate)
       }

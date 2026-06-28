@@ -53,9 +53,11 @@ export const Video = ({ setMsg }: VideoProps): ReactElement => {
       setDevices(mediaDevices)
 
       if (autoOpen) {
-        const videoId = storage.getVideoDevice()
-        if (!videoId) return
-        const device = mediaDevices.find((d) => d.videoId === videoId)
+        let videoId = storage.getVideoDevice()
+        let device = mediaDevices.find((d) => d.videoId === videoId)
+        if (!device) {
+          device = mediaDevices.find((d) => d.videoName.toLowerCase().includes('usb3 video'))
+        }
         if (!device) return
         await openCamera(device.videoId, device.audioId)
       }

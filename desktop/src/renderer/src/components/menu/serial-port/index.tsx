@@ -28,7 +28,7 @@ export const SerialPort = (): ReactElement => {
   const [baudRate, setBaudRate] = useAtom(baudRateAtom)
 
   const [connectingPort, setConnectingPort] = useState('')
-  const [serialPorts, setSerialPorts] = useState<string[]>([])
+  const [serialPorts, setSerialPorts] = useState<{ path: string; friendlyName?: string }[]>([])
   const [isBaudRateLoading, setIsBaudRateLoading] = useState(false)
 
   useEffect(() => {
@@ -85,28 +85,28 @@ export const SerialPort = (): ReactElement => {
   }
 
   const content = (
-    <div className="min-w-[200px] pt-2 pb-3">
+    <div className="min-w-[280px] pt-2 pb-3">
       <div className="mb-1 px-3 text-sm text-neutral-500">{t('menu.serialPort.device')}</div>
       <ScrollArea className="[&>[data-radix-scroll-area-viewport]]:max-h-[250px]">
         {serialPorts.length === 0 ? (
           <div className="p-3 text-sm text-neutral-500">{t('menu.serialPort.noDeviceFound')}</div>
         ) : (
-          serialPorts.map((port: string) => (
+          serialPorts.map((port) => (
             <div
-              key={port}
+              key={port.path}
               className={clsx(
-                'flex w-[230px] cursor-pointer items-center space-x-2 rounded px-3 py-2 hover:bg-neutral-700/50',
-                port === serialPort ? 'text-blue-500' : 'text-white'
+                'flex w-[260px] cursor-pointer items-center space-x-2 rounded px-3 py-2 hover:bg-neutral-700/50',
+                port.path === serialPort ? 'text-blue-500' : 'text-white'
               )}
-              onClick={() => openSerialPort(port)}
+              onClick={() => openSerialPort(port.path)}
             >
-              {port === connectingPort ? (
+              {port.path === connectingPort ? (
                 <LoaderCircleIcon className="animate-spin" size={16} />
               ) : (
                 <RadioIcon size={16} />
               )}
-              <span className="truncate" title={port}>
-                {port}
+              <span className="truncate" title={port.friendlyName || port.path}>
+                {port.friendlyName || port.path}
               </span>
             </div>
           ))

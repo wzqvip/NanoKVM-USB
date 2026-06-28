@@ -12,22 +12,32 @@ export function registerSerialPort(): void {
   ipcMain.handle(IpcEvents.SEND_MOUSE, sendMouse)
 }
 
-async function getSerialPorts(): Promise<string[]> {
+async function getSerialPorts(): Promise<{ path: string; friendlyName?: string }[]> {
   try {
     const ports = await SerialPort.list()
-    const paths = ports.map((port) => port.path)
+    const result = ports.map((port) => ({
+      path: port.path,
+      friendlyName: (port as any).friendlyName
+    }))
 
-    paths.unshift('Dummy USB Device (Testing)')
+    result.unshift({
+      path: 'Dummy USB Device (Testing)',
+      friendlyName: 'Dummy USB Device (Testing)'
+    })
 
-    return paths.sort((a, b) => {
-      if (a === 'Dummy USB Device (Testing)') return -1
-      if (b === 'Dummy USB Device (Testing)') return 1
-      const aHasUSB = a.toLowerCase().includes('usb')
-      const bHasUSB = b.toLowerCase().includes('usb')
+    return result.sort((a, b) => {
+      if (a.path === 'Dummy USB Device (Testing)') return -1
+      if (b.path === 'Dummy USB Device (Testing)') return 1
+      
+      const aName = a.friendlyName || a.path
+      const bName = b.friendlyName || b.path
+      
+      const aHasUSB = aName.toLowerCase().includes('usb')
+      const bHasUSB = bName.toLowerCase().includes('usb')
 
       if (aHasUSB && !bHasUSB) return -1
       if (!aHasUSB && bHasUSB) return 1
-      return a.localeCompare(b)
+      return aName.localeCompare(bName)
     })
   } catch (error) {
     console.error('Error listing serial ports:', error)
