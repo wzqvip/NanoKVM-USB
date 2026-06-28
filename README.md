@@ -1,9 +1,16 @@
 # NanoKVM-USB
 
-Changes:
-Add immersive/full screen mode. No UI.
-Add dummy video/serial device for testing.
-Add friendly name for Serial port(testing).
+This is a fork from [Sipeed NanoKVM-USB](https://github.com/sipeed/NanoKVM-USB).
+
+## Changes:
+
+- Add immersive/full screen mode. No UI.
+- Add dummy serial device for testing.
+- Add friendly name for Serial port(not working).
+
+![new_screenshot](image.png)
+
+## Original description
 
 <div align="center">
 
